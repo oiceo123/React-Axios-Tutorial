@@ -18,7 +18,34 @@ const db = mysql.createConnection({
   database: "employeeSystem",
 });
 
-app.get("/employees", (req, res) => {
+const apiKeyAuth = (req, res, next) => {
+  if (req.get("X-Api-Key") !== "4BLtUc3mPUwYV4h9") {
+    res.status(401).send({
+      traceId: "health-check-err-001",
+      msg: "not found api key",
+    });
+    return;
+  }
+  next();
+};
+
+const accessTokenAuth = (req, res, next) => {
+  const token = req.get("Authorization").replace("Bearer ", "");
+  if (token !== "tokenUser001") {
+    res.status(401).send({
+      traceId: "employeeErr-001",
+      msg: "not found access token",
+    });
+    return;
+  }
+  next();
+};
+
+app.get("/health-check", apiKeyAuth, (req, res) => {
+  res.send({ version: "Version-1" });
+});
+
+app.get("/employees", accessTokenAuth, (req, res) => {
   const id = req.query.id;
 
   if (id) {
@@ -40,7 +67,7 @@ app.get("/employees", (req, res) => {
   }
 });
 
-app.post("/create", (req, res) => {
+app.post("/create", accessTokenAuth, (req, res) => {
   const { name, age, country, position, wage } = req.body;
 
   db.query(
@@ -56,8 +83,7 @@ app.post("/create", (req, res) => {
   );
 });
 
-// ใช้ patch ก็ได้
-app.put("/update", (req, res) => {
+app.put("/update", accessTokenAuth, (req, res) => {
   const id = req.body.id;
   const wage = req.body.wage;
 
@@ -74,7 +100,7 @@ app.put("/update", (req, res) => {
   );
 });
 
-app.delete("/delete/:id", (req, res) => {
+app.delete("/delete/:id", accessTokenAuth, (req, res) => {
   const id = req.params.id;
 
   db.query("DELETE FROM employees WHERE id = ?", id, (err, result) => {
