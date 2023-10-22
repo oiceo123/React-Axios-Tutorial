@@ -1,5 +1,5 @@
-import { useState } from "react";
-import axios from "./api/axios";
+import { useEffect, useState } from "react";
+import axios from "./api";
 
 function App() {
   const [id, setId] = useState(1);
@@ -9,13 +9,35 @@ function App() {
   const [position, setPosition] = useState("");
   const [wage, setWage] = useState(0);
   const [newWage, setNewWage] = useState(0);
+  const [version, setVersion] = useState("");
 
   const [employeeList, setEmployeeList] = useState([]);
 
+  useEffect(() => {
+    getHealthCheck();
+    localStorage.setItem("token", "tokenUser001");
+  }, []);
+
+  const getHealthCheck = () => {
+    axios
+      .get("/health-check")
+      .then((res) => {
+        setVersion(res.data.version);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const getEmployees = () => {
-    axios.get("/employees").then((res) => {
-      setEmployeeList(res.data);
-    });
+    axios
+      .get("/employees")
+      .then((res) => {
+        setEmployeeList(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const getEmployeeById = () => {
@@ -80,7 +102,12 @@ function App() {
 
   return (
     <div className="App container">
-      <h1>Employee Information</h1>
+      <div className="d-flex">
+        <h1>Employee Information</h1>
+        <h1 className="ms-auto text-success">
+          <u>{version}</u>
+        </h1>
+      </div>
       <div className="information">
         <form action="">
           <div className="mb-3">
@@ -178,7 +205,7 @@ function App() {
         <br />
         {employeeList.map((val, key) => {
           return (
-            <div className="employee card">
+            <div className="employee card" key={key}>
               <div className="card-body text-left">
                 <p className="card-text">Name: {val.name}</p>
                 <p className="card-text">Age: {val.age}</p>
