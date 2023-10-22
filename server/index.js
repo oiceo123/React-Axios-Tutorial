@@ -2,9 +2,14 @@ const express = require("express");
 const app = express();
 const mysql = require("mysql");
 const cors = require("cors");
+const bodyParser = require("body-parser");
+const multer = require("multer");
+const upload = multer();
 
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(upload.array());
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -14,13 +19,25 @@ const db = mysql.createConnection({
 });
 
 app.get("/employees", (req, res) => {
-  db.query("SELECT * FROM employees", (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.send(result);
-    }
-  });
+  const id = req.query.id;
+
+  if (id) {
+    db.query("SELECT * FROM employees WHERE id = ?", id, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    });
+  } else {
+    db.query("SELECT * FROM employees", (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    });
+  }
 });
 
 app.post("/create", (req, res) => {
@@ -39,6 +56,7 @@ app.post("/create", (req, res) => {
   );
 });
 
+// ใช้ patch ก็ได้
 app.put("/update", (req, res) => {
   const id = req.body.id;
   const wage = req.body.wage;
@@ -56,18 +74,17 @@ app.put("/update", (req, res) => {
   );
 });
 
-app.delete('/delete/:id', (req, res) => {
+app.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
 
   db.query("DELETE FROM employees WHERE id = ?", id, (err, result) => {
-    if(err) {
+    if (err) {
       console.log(err);
-    }
-    else {
+    } else {
       res.send(result);
     }
-  })
-})
+  });
+});
 
 app.listen("3001", () => {
   console.log("Server is running on port 3001");
