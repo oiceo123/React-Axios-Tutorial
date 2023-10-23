@@ -7,19 +7,17 @@ const instance = axios.create({
   /* withCredentials: true, */ // คำสั่งที่กำหนดให้ axios สามารถส่ง cookie ไปที่ server ได้
 });
 
-// Add a request interceptor
-instance.interceptors.request.use(
+// เพิ่ม request interceptor
+axios.interceptors.request.use(
   (config) => {
     // ทำการเซ็ต config บางอย่างก่อนที่จะส่ง request เช่น เซ็ต token ก่อนส่ง request
-    // get api key
     const apiKey = process.env.REACT_APP_API_KEY;
     if (apiKey) {
-      config.headers["X-Api-Key"] = apiKey;
+      config.headers["X-Api-Key"] = apiKey; // ส่งไปใน header ในชื่อ X-Api-Key
     }
-    // get access token
     const token = localStorage.getItem("token");
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;// ส่งไปใน header ในชื่อ Authorization
     }
     return config;
   },
@@ -29,14 +27,14 @@ instance.interceptors.request.use(
   }
 );
 
-// Add a response interceptor
-instance.interceptors.response.use(
+// เพิ่ม response interceptor
+axios.interceptors.response.use(
   (response) => {
     // หากได้รับ status code ที่อยู่ในช่วง 2xx จะเข้ามาทำงานตรงนี้
     return response;
   },
   (error) => {
-    // หากได้รับ error จาก response จะเข้ามาทำงานตรงนี้
+    // หากได้รับ status code ที่ไม่ได้อยู่ในช่วง 2xx จะเข้ามาทำงานตรงนี้
     if (error.response && error.response.status === 401) {
       console.log("Unauthorize");
       return;
