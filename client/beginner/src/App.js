@@ -12,6 +12,31 @@ function App() {
 
   const [employeeList, setEmployeeList] = useState([]);
 
+  // การดัก Error ใน axios
+  /* const getEmployees = () => {
+    axios
+      .get("http://localhost:3001/employees")
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        if (err.response) {
+          // ส่ง request ไปแล้วได้รับ response status code ที่ไม่ได้อยู่ในช่วง 2xx
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+        } else if (err.request) {
+          // ส่ง request แต่ไม่ได้รับ response กลับมา
+          console.log(err.request);
+        } else {
+          // หากไม่เข้าเงื่อนไขไหนเลยจะเข้า case นี้
+          console.log("Error:", err.message);
+          console.log(err.config);
+          console.log(err.toJSON()); // ไว้ดูข้อมูลเพิ่มเติมเกี่ยวกับ HTTP error
+        }
+      });
+  }; */
+
   // แบบใส่ config เข้าไปใน function เลย
   /* const getEmployees = () => {
     axios({
