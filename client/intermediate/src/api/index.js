@@ -8,7 +8,7 @@ const instance = axios.create({
 });
 
 // เพิ่ม request interceptor
-axios.interceptors.request.use(
+instance.interceptors.request.use(
   (config) => {
     // ทำการเซ็ต config บางอย่างก่อนที่จะส่ง request เช่น เซ็ต token ก่อนส่ง request
     const apiKey = process.env.REACT_APP_API_KEY;
@@ -28,7 +28,7 @@ axios.interceptors.request.use(
 );
 
 // เพิ่ม response interceptor
-axios.interceptors.response.use(
+instance.interceptors.response.use(
   (response) => {
     // หากได้รับ status code ที่อยู่ในช่วง 2xx จะเข้ามาทำงานตรงนี้
     return response;
