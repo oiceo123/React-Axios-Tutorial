@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import useEffectOnce from "./useEffectOnce";
 
 function App() {
   const [id, setId] = useState(1);
@@ -35,6 +36,135 @@ function App() {
           console.log(err.toJSON()); // ไว้ดูข้อมูลเพิ่มเติมเกี่ยวกับ HTTP error
         }
       });
+  }; */
+
+  // axios ไม่ใช้ async/await
+  /* const getEmployees = () => {
+    axios
+      .get("http://localhost:3001/employees")
+      .then((res) => {
+        console.log("res", res);
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+
+    console.log("End");
+  }; */
+
+  // axios ใช้ async/await
+  /* const getEmployees = async () => {
+    await axios
+      .get("http://localhost:3001/employees")
+      .then((res) => {
+        console.log("res", res);
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+
+    console.log("End");
+  }; */
+
+  // axios ใช้ async/await แต่มีการเรียกใช้ฟังก์ชั่น 2 ฟังก์ชั่นในระดับเดียวกันโดยไม่ใช้ async/await
+  /* useEffectOnce(() => {
+    getEmployees1();
+    displayStart();
+  }); */
+
+  // axios ใช้ async/await แต่มีการเรียกใช้ฟังก์ชั่น 2 ฟังก์ชั่นในระดับเดียวกันโดยใช้ async/await
+  /* useEffectOnce(async () => {
+    await getEmployees1()
+    await displayStart()
+  }); */
+
+  /* const getEmployees1 = async () => {
+    await axios
+      .get("http://localhost:3001/employees")
+      .then((res) => {
+        console.log("res", res);
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+
+    console.log("End");
+  }; */
+
+  /* const displayStart = async () => {
+    await axios
+      .get("http://localhost:3001/employees")
+      .then((res) => {
+        console.log("res", res);
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+
+    console.log("Starting...");
+  }; */
+
+  // Concurency ของ axios ไม่ใช้ async/await
+  /* const getEmployees = () => {
+    const reqEmployee1 = axios.get("http://localhost:3001/employees");
+    const reqEmployee2 = axios.get("http://localhost:3001/employees?id=11");
+
+    Promise
+      .all([reqEmployee1, reqEmployee2])
+      .then(
+        axios.spread((res1, res2) => {
+          console.log("res1", res1);
+          console.log("res2", res2);
+        })
+      )
+      .catch((err) => {
+        console.error(err);
+      });
+
+    console.log("End")
+  }; */
+
+  // Concurency ของ axios ใช้ async/await
+  /* const getEmployees = async () => {
+    const reqEmployee1 = axios.get("http://localhost:3001/employees");
+    const reqEmployee2 = axios.get("http://localhost:3001/employees?id=11");
+
+    await Promise.all([reqEmployee1, reqEmployee2])
+      .then(
+        axios.spread((res1, res2) => {
+          console.log("res1", res1);
+          console.log("res2", res2);
+        })
+      )
+      .catch((err) => {
+        console.error(err);
+      });
+
+    console.log("End");
+  }; */
+
+  // Concurency ของ axios ใช้ async/await และ try,catch
+  /* const getEmployees = async () => {
+    try {
+      const reqEmployee1 = axios.get("http://localhost:3001/employees11");
+      const reqEmployee2 = axios.get("http://localhost:3001/employees?id=11");
+
+      await Promise.all([reqEmployee1, reqEmployee2])
+        .then(
+          axios.spread((res1, res2) => {
+            console.log("res1", res1);
+            console.log("res2", res2);
+          })
+        )
+        .catch((err) => {
+          console.log("error", err);
+          // throw err
+        });
+
+      console.log("End");
+    } catch (error) {
+      console.log("error2", error);
+    }
   }; */
 
   // แบบใส่ config เข้าไปใน function เลย
@@ -285,7 +415,7 @@ function App() {
         <br />
         {employeeList.map((val, key) => {
           return (
-            <div className="employee card">
+            <div className="employee card" key={key}>
               <div className="card-body text-left">
                 <p className="card-text">Name: {val.name}</p>
                 <p className="card-text">Age: {val.age}</p>
