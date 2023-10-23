@@ -4,6 +4,7 @@ import axios from "axios";
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   timeout: 5000, // 5000ms => 5s
+  /* withCredentials: true, */ // ไว้บอกว่าให้ axios สามารถส่ง cookie ไปที่ server ได้
 });
 
 // Add a request interceptor
@@ -43,5 +44,10 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Global axios
+/* axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded"; */
 
 export default instance;
